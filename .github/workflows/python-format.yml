@@ -42,7 +42,7 @@ jobs:
         with:
           commit_message: "chore: auto format (black & isort)"
           branch: ${{ github.head_ref }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          file_pattern: "." 
 
       # ===== Static Analysis =====
 
