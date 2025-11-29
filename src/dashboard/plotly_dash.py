@@ -7,14 +7,20 @@ import yaml
 from dash import dcc, html
 from dash.dependencies import Input, Output
 
-from src.infrastructure.read_write_csv_cash_account import ReadWriteCsvCashAcount
+from src.infrastructure.read_write_csv_cash_account import (
+    ReadWriteCsvCashAcount,
+)
 
 
 class DashBoard:
     def __init__(self, config_path: str, target_ym: str):
         self.logger = getLogger(self.__class__.__name__)
-        self.external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
-        self.__app = dash.Dash(__name__, external_stylesheets=self.external_stylesheets)
+        self.external_stylesheets = [
+            "https://codepen.io/chriddyp/pen/bWLwgP.css"
+        ]
+        self.__app = dash.Dash(
+            __name__, external_stylesheets=self.external_stylesheets
+        )
         self._server = self.__app.server
         self.__rwc = ReadWriteCsvCashAcount()
         self.target_ym = target_ym
@@ -118,5 +124,7 @@ class DashBoard:
 
         self.__app.callback(
             Output(component_id="stock_chart", component_property="children"),
-            Input(component_id="stock_chart_dropdown", component_property="value"),
+            Input(
+                component_id="stock_chart_dropdown", component_property="value"
+            ),
         )(self.update_graph)

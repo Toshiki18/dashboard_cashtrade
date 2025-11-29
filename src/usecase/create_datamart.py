@@ -5,7 +5,9 @@ from logging import getLogger
 import polars as pl
 import yaml
 
-from src.infrastructure.read_write_csv_cash_account import ReadWriteCsvCashAcount
+from src.infrastructure.read_write_csv_cash_account import (
+    ReadWriteCsvCashAcount,
+)
 
 
 class CreateDatamart:
@@ -64,9 +66,9 @@ class CreateDatamart:
         """
         _file_path = self.config["cashtrade"]["file_path"]
         # データを読み込み、取引日をstr型に変換する
-        _cash_trade = self.__rwc.read_csv_raw(_file_path, self.target_ym).with_columns(
-            pl.col("取引日").cast(pl.Utf8).alias("取引日")
-        )
+        _cash_trade = self.__rwc.read_csv_raw(
+            _file_path, self.target_ym
+        ).with_columns(pl.col("取引日").cast(pl.Utf8).alias("取引日"))
 
         # グリッドデータを作成する
         self.closs_joined_date = (
@@ -76,7 +78,9 @@ class CreateDatamart:
                 how="left",
             )
             # 当日の取引履歴であるため、直前の値でnullは埋める
-            .with_columns(pl.col("現在（貸付）高").fill_null(strategy="forward"))
+            .with_columns(
+                pl.col("現在（貸付）高").fill_null(strategy="forward")
+            )
         )
         self._closs_joined_date_fillnull = (
             self.closs_joined_date.with_columns(
@@ -88,9 +92,15 @@ class CreateDatamart:
             # 直前の取引履歴がない場合は、(直後の残高) + (直前の払出金額) - (直前の受入金額)
             .with_columns(
                 [
-                    pl.col("現在（貸付）高").shift(-1).alias("次_現在（貸付）高"),
-                    pl.col("払出金額（円）").shift(-1).alias("次_払出金額（円）"),
-                    pl.col("受入金額（円）").shift(-1).alias("次_受入金額（円）"),
+                    pl.col("現在（貸付）高")
+                    .shift(-1)
+                    .alias("次_現在（貸付）高"),
+                    pl.col("払出金額（円）")
+                    .shift(-1)
+                    .alias("次_払出金額（円）"),
+                    pl.col("受入金額（円）")
+                    .shift(-1)
+                    .alias("次_受入金額（円）"),
                 ]
             )
             .with_columns(
@@ -110,7 +120,9 @@ class CreateDatamart:
             )
             # 収支の計算
             .with_columns(
-                (pl.col("受入金額（円）") - pl.col("払出金額（円）")).alias("収支")
+                (pl.col("受入金額（円）") - pl.col("払出金額（円）")).alias(
+                    "収支"
+                )
             )
         )
 
