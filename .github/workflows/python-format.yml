@@ -47,7 +47,7 @@ jobs:
           branch: ${{ github.head_ref }}  # PR元ブランチにpush
           file_pattern: "."
           token: ${{ secrets.GITHUB_TOKEN }}
-          stash: false                     # ローカル変更をstashせず直接commit
+          stash: true                     # ローカル変更をstashせず直接commit
 
       # 6️⃣ flake8 チェック
       - name: Run flake8
