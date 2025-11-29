@@ -1,12 +1,14 @@
+from logging import getLogger
+
 import dash
-from dash import html
-from dash import dcc
 import plotly.graph_objects as go
 import polars as pl
-from logging import getLogger
-from src.infrastructure.read_write_csv_cash_account import ReadWriteCsvCashAcount
 import yaml
+from dash import dcc, html
 from dash.dependencies import Input, Output
+
+from src.infrastructure.read_write_csv_cash_account import \
+    ReadWriteCsvCashAcount
 
 
 class DashBoard:
@@ -21,7 +23,10 @@ class DashBoard:
         with open(config_path) as _f:
             self.config = yaml.load(_f, Loader=yaml.FullLoader)
         # データの読み込み
-        self._pl_df = self.__rwc.read_csv(self.config["tmp"]["file_path"], self.target_ym)
+        self._pl_df = self.__rwc.read_csv(
+            self.config["tmp"]["file_path"], self.target_ym
+        )
+
     def run_all(self):
         self.data()  # 図の作成
         self.createdash()  # ダッシュボードの作成

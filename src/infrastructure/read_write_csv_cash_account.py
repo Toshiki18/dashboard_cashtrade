@@ -1,9 +1,11 @@
 # Libraries
-import polars as pl
-from logging import getLogger
 import glob
+from logging import getLogger
 
-class ReadWriteCsvCashAcount():
+import polars as pl
+
+
+class ReadWriteCsvCashAcount:
     """
     ゆうちょ銀行からダウンロードしたcsvから必要な列を抽出する。
     """
@@ -13,14 +15,14 @@ class ReadWriteCsvCashAcount():
 
     def read_csv_raw(self, file_path: str, target_ym: str):
         """
-            ゆうちょ銀行のcsvはヘッダーが8行目にあるため、skip_rows=7を設定する
-            Args:
-                file_path: 処理するデータのパス
-                target_ym: 処理するデータの対象年月
-                cash_record.csv: 取引履歴のcsvファイル名
+        ゆうちょ銀行のcsvはヘッダーが8行目にあるため、skip_rows=7を設定する
+        Args:
+            file_path: 処理するデータのパス
+            target_ym: 処理するデータの対象年月
+            cash_record.csv: 取引履歴のcsvファイル名
 
-            Returns:
-                Polars_DataFrame: 処理するデータのDataFrame
+        Returns:
+            Polars_DataFrame: 処理するデータのDataFrame
         """
         csv_path = glob.glob(file_path + f"/{target_ym}" + "/*.csv")
         try:
@@ -35,14 +37,14 @@ class ReadWriteCsvCashAcount():
             raise e
 
         return _df_csv
-    
+
     def write_csv(self, file_path: str, target_ym: str, pl_df):
         """
-            処理したデータをデータマートとして保存する機能
-            Args:
-                file_path: 保存するディレクトリ
-                target_ym: 保存するデータの対象年月
-                pl_df: 処理したデータ
+        処理したデータをデータマートとして保存する機能
+        Args:
+            file_path: 保存するディレクトリ
+            target_ym: 保存するデータの対象年月
+            pl_df: 処理したデータ
         """
         _save_path = file_path + f"/{target_ym}" + "/cash_record_tmp.csv"
         try:
@@ -55,14 +57,14 @@ class ReadWriteCsvCashAcount():
 
     def read_csv(self, file_path: str, target_ym: str):
         """
-            加工し保存したcsvデータを読み込む。
-            Args:
-                file_path: 処理するデータのパス
-                target_ym: 処理するデータの対象年月
-                cash_record.csv: 取引履歴のcsvファイル名
+        加工し保存したcsvデータを読み込む。
+        Args:
+            file_path: 処理するデータのパス
+            target_ym: 処理するデータの対象年月
+            cash_record.csv: 取引履歴のcsvファイル名
 
-            Returns:
-                Polars_DataFrame: 処理するデータのDataFrame
+        Returns:
+            Polars_DataFrame: 処理するデータのDataFrame
         """
         csv_path = glob.glob(file_path + f"/{target_ym}" + "/*.csv")
         try:
