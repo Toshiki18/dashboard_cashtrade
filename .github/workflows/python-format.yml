@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install --upgrade pip
-          pip install black isort flake8 mypy
+          pip install black isort flake8 mypy types-PyYAML
 
       # 4️⃣ Black & isort 整形
       - name: Run Black
