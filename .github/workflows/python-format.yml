@@ -1,0 +1,49 @@
+name: Python Format & Lint
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  format-and-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      # リポジトリの取得
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Python セットアップ
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # 必要パッケージのインストール
+      - name: Install dependencies
+        run: |
+          pip install black isort flake8 mypy
+
+      # ===== フォーマット（自動整形） =====
+
+      - name: Run black
+        run: black .
+
+      - name: Run isort
+        run: isort .
+
+      # black / isort の差分があれば自動コミット
+      - name: Commit formatting changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: auto format (black & isort)"
+
+      # ===== 静的解析 =====
+
+      - name: Run flake8
+        run: flake8 .
+
+      - name: Run mypy
+        run: mypy .
