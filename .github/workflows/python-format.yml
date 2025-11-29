@@ -1,4 +1,4 @@
-name: Python Format & Lint
+name: Auto Format & Lint
 
 on:
   pull_request:
@@ -13,42 +13,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout PR ブランチ
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
+      # 2️⃣ Python セットアップ
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
+      # 3️⃣ 依存関係インストール
       - name: Install dependencies
         run: |
+          pip install --upgrade pip
           pip install black isort flake8 mypy
 
-      # ===== Formatting =====
-
-      - name: Run black
+      # 4️⃣ Black & isort 整形
+      - name: Run Black
         run: black .
 
       - name: Run isort
         run: isort .
 
-      # Push only if PR is NOT from a fork
-      - name: Auto commit formatting
-        if: github.event.pull_request.head.repo.full_name == github.repository
+      # 5️⃣ 自動 commit & push（PR ブランチに直接）
+      - name: Auto commit formatted files
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: auto format (black & isort)"
           branch: ${{ github.head_ref }}
-          file_pattern: "." 
+          file_pattern: "."
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      # ===== Static Analysis =====
-
+      # 6️⃣ flake8 チェック
       - name: Run flake8
         run: flake8 .
 
+      # 7️⃣ mypy チェック
       - name: Run mypy
         run: mypy .
+
 
