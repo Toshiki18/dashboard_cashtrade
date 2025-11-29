@@ -1,6 +1,6 @@
 [tool.black]
 line-length = 79
-target-version = ["py311"]   # 使用しているPythonバージョンに合わせる
+target-version = ["py311"]
 exclude = '''
 /(
     \.venv
@@ -29,8 +29,3 @@ python_version = "3.11"
 ignore_missing_imports = true
 strict = false
 
-
-[tool.mypy]
-python_version = "3.10"
-ignore_missing_imports = true
-strict = false
