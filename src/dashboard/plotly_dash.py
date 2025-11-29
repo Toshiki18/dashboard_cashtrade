@@ -7,7 +7,7 @@ import yaml
 from dash import dcc, html
 from dash.dependencies import Input, Output
 
-from src.infrastructure.read_write_csv_cash_account import (
+from infrastructure.read_write_csv_cash_account import (
     ReadWriteCsvCashAcount,
 )
 
