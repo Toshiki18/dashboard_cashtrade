@@ -13,14 +13,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout PR ブランチ
-      - name: Checkout code
+      # 1️⃣ PR 元ブランチを checkout
+      - name: Checkout PR branch
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
-      # 2️⃣ Python セットアップ
+      # 2️⃣ Python をセットアップ
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -44,9 +44,10 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: auto format (black & isort)"
-          branch: ${{ github.head_ref }}
+          branch: ${{ github.head_ref }}  # PR元ブランチにpush
           file_pattern: "."
           token: ${{ secrets.GITHUB_TOKEN }}
+          stash: false                     # ローカル変更をstashせず直接commit
 
       # 6️⃣ flake8 チェック
       - name: Run flake8
@@ -55,5 +56,3 @@ jobs:
       # 7️⃣ mypy チェック
       - name: Run mypy
         run: mypy .
-
-
