@@ -4,29 +4,30 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   format-and-lint:
     runs-on: ubuntu-latest
 
     steps:
-      # リポジトリの取得
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      # Python セットアップ
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      # 必要パッケージのインストール
       - name: Install dependencies
         run: |
           pip install black isort flake8 mypy
 
-      # ===== フォーマット（自動整形） =====
+      # ===== Formatting =====
 
       - name: Run black
         run: black .
@@ -34,16 +35,20 @@ jobs:
       - name: Run isort
         run: isort .
 
-      # black / isort の差分があれば自動コミット
-      - name: Commit formatting changes
+      # Push only if PR is NOT from a fork
+      - name: Auto commit formatting
+        if: github.event.pull_request.head.repo.full_name == github.repository
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: auto format (black & isort)"
+          branch: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      # ===== 静的解析 =====
+      # ===== Static Analysis =====
 
       - name: Run flake8
         run: flake8 .
 
       - name: Run mypy
         run: mypy .
+
